@@ -1,6 +1,8 @@
 package com.example.herexamenmobile;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.NumberViewHolder> {
     private LayoutInflater Inflater;
     private Context context;
-    private final LinkedList<Integer> testList;
+    ArrayList<Projects> projectList;
 
-    public ItemAdapter(Context context, LinkedList<Integer> testList){
+    public ItemAdapter(Context context, ArrayList<Projects> projectList){
         Inflater = LayoutInflater.from(context);
         this.context = context;
-        this.testList = testList;
+        this.projectList = projectList;
     }
 
     @NonNull
@@ -32,13 +34,26 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.NumberViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ItemAdapter.NumberViewHolder holder, int position) {
-        Integer currentNumber = testList.get(position);
-        holder.Title.setText(currentNumber.toString());
+        final Projects currentProject = projectList.get(position);
+        holder.Title.setText(currentProject.getTitle());
+
+        holder.Layout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(context, item_detail.class);
+
+                intent.putExtra("title", currentProject.getTitle());
+                intent.putExtra("description", currentProject.getDescription());
+                intent.putExtra("url", currentProject.getUrl());
+
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return testList.size();
+        return projectList.size();
     }
 
     static class NumberViewHolder extends RecyclerView.ViewHolder{
